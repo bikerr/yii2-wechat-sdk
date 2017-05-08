@@ -25,7 +25,7 @@ class Merchant extends WechatComponent
         $result = $this->wechat->httpRaw(self::WECHAT_PRODUCT_ADD_PREFIX, $data, [
             'access_token' => $this->wechat->getAccessToken()
         ]);
-        return isset($result['errmsg']) && $result['errmsg'] == 'success' ? $result['product_id'] : false;
+        return isset($result['errmsg']) && $result['errmsg'] == 'ok' ? $result['product_id'] : false;
     }
 
     /**
@@ -44,7 +44,7 @@ class Merchant extends WechatComponent
         ], [
             'access_token' => $this->wechat->getAccessToken()
         ]);
-        return isset($result['errmsg']) && $result['errmsg'] == 'success';
+        return isset($result['errmsg']) && $result['errmsg'] == 'ok';
     }
 
     /**
@@ -62,7 +62,7 @@ class Merchant extends WechatComponent
         $result = $this->wechat->httpRaw(self::WECHAT_PRODUCT_UPDATE_PREFIX, $data, [
             'access_token' => $this->wechat->getAccessToken()
         ]);
-        return isset($result['errmsg']) && $result['errmsg'] == 'success';
+        return isset($result['errmsg']) && $result['errmsg'] == 'ok';
     }
 
     /**
@@ -82,7 +82,7 @@ class Merchant extends WechatComponent
         ], [
             'access_token' => $this->wechat->getAccessToken()
         ]);
-        return isset($result['errmsg']) && $result['errmsg'] == 'success' ? $result['product_info'] : false;
+        return isset($result['errmsg']) && $result['errmsg'] == 'ok' ? $result['product_info'] : false;
     }
 
     /**
@@ -101,7 +101,7 @@ class Merchant extends WechatComponent
         ], [
             'access_token' => $this->wechat->getAccessToken()
         ]);
-        return isset($result['errmsg']) && $result['errmsg'] == 'success' ? $result['product_info'] : false;
+        return isset($result['errmsg']) && $result['errmsg'] == 'ok' ? $result['products_info'] : false;
     }
 
     /**
@@ -119,7 +119,7 @@ class Merchant extends WechatComponent
         $result = $this->wechat->httpRaw(self::WECHAT_PRODUCT_STATUS_UPDATE_PREFIX, $data, [
             'access_token' => $this->wechat->getAccessToken()
         ]);
-        return isset($result['errmsg']) && $result['errmsg'] == 'success';
+        return isset($result['errmsg']) && $result['errmsg'] == 'ok';
     }
 
     /**
@@ -139,7 +139,7 @@ class Merchant extends WechatComponent
         ], [
             'access_token' => $this->wechat->getAccessToken()
         ]);
-        return isset($result['errmsg']) && $result['errmsg'] == 'success' ? $result['cate_list'] : false;
+        return isset($result['errmsg']) && $result['errmsg'] == 'ok' ? $result['cate_list'] : false;
     }
 
     /**
@@ -159,7 +159,7 @@ class Merchant extends WechatComponent
         ], [
             'access_token' => $this->wechat->getAccessToken()
         ]);
-        return isset($result['errmsg']) && $result['errmsg'] == 'success' ? $result['sku_table'] : false;
+        return isset($result['errmsg']) && $result['errmsg'] == 'ok' ? $result['sku_table'] : false;
     }
 
     /**
@@ -178,7 +178,7 @@ class Merchant extends WechatComponent
         ], [
             'access_token' => $this->wechat->getAccessToken()
         ]);
-        return isset($result['errmsg']) && $result['errmsg'] == 'success' ? $result['properties'] : false;
+        return isset($result['errmsg']) && $result['errmsg'] == 'ok' ? $result['properties'] : false;
     }
 
     /**
@@ -196,7 +196,7 @@ class Merchant extends WechatComponent
         $result = $this->wechat->httpRaw(self::WECHAT_PRODUCT_STOCK_ADD_PREFIX, $data, [
             'access_token' => $this->wechat->getAccessToken()
         ]);
-        return isset($result['errmsg']) && $result['errmsg'] == 'success';
+        return isset($result['errmsg']) && $result['errmsg'] == 'ok';
     }
 
     /**
@@ -214,7 +214,7 @@ class Merchant extends WechatComponent
         $result = $this->wechat->httpRaw(self::WECHAT_PRODUCT_STOCK_REDUCE_URL, $data, [
             'access_token' => $this->wechat->getAccessToken()
         ]);
-        return isset($result['errmsg']) && $result['errmsg'] == 'success';
+        return isset($result['errmsg']) && $result['errmsg'] == 'ok';
     }
 
     /**
@@ -233,7 +233,7 @@ class Merchant extends WechatComponent
         ], [
             'access_token' => $this->wechat->getAccessToken()
         ]);
-        return isset($result['errmsg']) && $result['errmsg'] == 'success' ? $result['template_id'] : false;
+        return isset($result['errmsg']) && $result['errmsg'] == 'ok' ? $result['template_id'] : false;
     }
 
     /**
@@ -252,7 +252,7 @@ class Merchant extends WechatComponent
         ], [
             'access_token' => $this->wechat->getAccessToken()
         ]);
-        return isset($result['errmsg']) && $result['errmsg'] == 'success';
+        return isset($result['errmsg']) && $result['errmsg'] == 'ok';
     }
 
     /**
@@ -270,7 +270,7 @@ class Merchant extends WechatComponent
         $result = $this->wechat->httpRaw(self::WECHAT_DELIVERY_TEMPLATE_UPDATE_PREFIX, $data, [
             'access_token' => $this->wechat->getAccessToken()
         ]);
-        return isset($result['errmsg']) && $result['errmsg'] == 'success';
+        return isset($result['errmsg']) && $result['errmsg'] == 'ok';
     }
 
     /**
@@ -287,7 +287,7 @@ class Merchant extends WechatComponent
         $result = $this->wechat->httpRaw(self::WECHAT_DELIVERY_TEMPLATE_ID_GET_PREFIX, [
             'template_id' => $templateId
         ]);
-        return isset($result['errmsg']) && $result['errmsg'] == 'success' ? $result['template_info'] : false;
+        return isset($result['errmsg']) && $result['errmsg'] == 'ok' ? $result['template_info'] : false;
     }
 
     /**
@@ -304,7 +304,7 @@ class Merchant extends WechatComponent
         $result = $this->wechat->httpGet(self::WECHAT_DELIVERY_TEMPLATE_LIST_GET_PREFIX, [
             'access_token' => $this->wechat->getAccessToken()
         ]);
-        return isset($result['errmsg']) && $result['errmsg'] == 'success' ? $result['templates_info'] : false;
+        return isset($result['errmsg']) && $result['errmsg'] == 'ok' ? $result['templates_info'] : false;
     }
 
     /**
@@ -324,7 +324,7 @@ class Merchant extends WechatComponent
         ], [
             'access_token' => $this->wechat->getAccessToken()
         ]);
-        return isset($result['errmsg']) && $result['errmsg'] == 'success' ? $result['group_id'] : false;
+        return isset($result['errmsg']) && $result['errmsg'] == 'ok' ? $result['group_id'] : false;
     }
 
     /**
@@ -344,7 +344,7 @@ class Merchant extends WechatComponent
         ], [
             'access_token' => $this->wechat->getAccessToken()
         ]);
-        return isset($result['errmsg']) && $result['errmsg'] == 'success';
+        return isset($result['errmsg']) && $result['errmsg'] == 'ok';
     }
 
     /**
@@ -362,7 +362,7 @@ class Merchant extends WechatComponent
         $result = $this->wechat->httpRaw(self::WECHAT_GROUP_UPDATE_PREFIX, $data, [
             'access_token' => $this->wechat->getAccessToken()
         ]);
-        return isset($result['errmsg']) && $result['errmsg'] == 'success';
+        return isset($result['errmsg']) && $result['errmsg'] == 'ok';
     }
 
     /**
@@ -380,7 +380,7 @@ class Merchant extends WechatComponent
         $result = $this->wechat->httpRaw(self::WECHAT_GROUP_PRODUCT_UPDATE_PREFIX, $data, [
             'access_token' => $this->wechat->getAccessToken()
         ]);
-        return isset($result['errmsg']) && $result['errmsg'] == 'success';
+        return isset($result['errmsg']) && $result['errmsg'] == 'ok';
     }
 
     /**
@@ -397,7 +397,7 @@ class Merchant extends WechatComponent
         $result = $this->wechat->httpGet(self::WECHAT_GROUP_LIST_PREFIX, [
             'access_token' => $this->wechat->getAccessToken()
         ]);
-        return isset($result['errmsg']) && $result['errmsg'] == 'success' ? $result['groups_detail'] : false;
+        return isset($result['errmsg']) && $result['errmsg'] == 'ok' ? $result['groups_detail'] : false;
     }
 
     /**
@@ -417,7 +417,7 @@ class Merchant extends WechatComponent
         ], [
             'access_token' => $this->wechat->getAccessToken()
         ]);
-        return isset($result['errmsg']) && $result['errmsg'] == 'success' ? $result['groups_detail'] : false;
+        return isset($result['errmsg']) && $result['errmsg'] == 'ok' ? $result['groups_detail'] : false;
     }
 
     /**
@@ -435,7 +435,7 @@ class Merchant extends WechatComponent
         $result = $this->wechat->httpRaw(self::WECHAT_SHELF_ADD_PREFIX, $data, [
             'access_token' => $this->wechat->getAccessToken()
         ]);
-        return isset($result['errmsg']) && $result['errmsg'] == 'success' ? $result['shelf_id'] : false;
+        return isset($result['errmsg']) && $result['errmsg'] == 'ok' ? $result['shelf_id'] : false;
     }
 
     /**
@@ -454,7 +454,7 @@ class Merchant extends WechatComponent
         ], [
             'access_token' => $this->wechat->getAccessToken()
         ]);
-        return isset($result['errmsg']) && $result['errmsg'] == 'success';
+        return isset($result['errmsg']) && $result['errmsg'] == 'ok';
     }
 
     /**
@@ -472,7 +472,7 @@ class Merchant extends WechatComponent
         $result = $this->wechat->httpRaw(self::WECHAT_SHELF_UPDATE_PREFIX, $data, [
             'access_token' => $this->wechat->getAccessToken()
         ]);
-        return isset($result['errmsg']) && $result['errmsg'] == 'success';
+        return isset($result['errmsg']) && $result['errmsg'] == 'ok';
     }
 
     /**
@@ -489,7 +489,7 @@ class Merchant extends WechatComponent
         $result = $this->wechat->httpGet(self::WECHAT_SHELF_LIST_PREFIX, [
             'access_token' => $this->wechat->getAccessToken()
         ]);
-        return isset($result['errmsg']) && $result['errmsg'] == 'success' ? $result['shelves'] : false;
+        return isset($result['errmsg']) && $result['errmsg'] == 'ok' ? $result['shelves'] : false;
     }
 
     /**
@@ -508,7 +508,7 @@ class Merchant extends WechatComponent
         ], [
             'access_token' => $this->wechat->getAccessToken()
         ]);
-        return isset($result['errmsg']) && $result['errmsg'] == 'success' ? $result['shelf_info'] : false;
+        return isset($result['errmsg']) && $result['errmsg'] == 'ok' ? $result['shelf_info'] : false;
     }
 
     /**
@@ -528,7 +528,7 @@ class Merchant extends WechatComponent
         ], [
             'access_token' => $this->wechat->getAccessToken()
         ]);
-        return isset($result['errmsg']) && $result['errmsg'] == 'success' ? $result['order'] : false;
+        return isset($result['errmsg']) && $result['errmsg'] == 'ok' ? $result['order'] : false;
     }
 
     /**
@@ -545,7 +545,7 @@ class Merchant extends WechatComponent
         $result = $this->wechat->httpRaw(self::WECHAT_ORDER_FILTER_GET_PREFIX, $data, [
             'access_token' => $this->wechat->getAccessToken()
         ]);
-        return isset($result['errmsg']) && $result['errmsg'] == 'success' ? $result['order_list'] : false;
+        return isset($result['errmsg']) && $result['errmsg'] == 'ok' ? $result['order_list'] : false;
     }
 
     /**
@@ -574,7 +574,7 @@ class Merchant extends WechatComponent
         $result = $this->wechat->httpRaw(self::WECHAT_ORDER_DELIVERY_SET_PREFIX, $data, [
             'access_token' => $this->wechat->getAccessToken()
         ]);
-        return isset($result['errmsg']) && $result['errmsg'] == 'success' ? $result['order_list'] : false;
+        return isset($result['errmsg']) && $result['errmsg'] == 'ok' ? $result['order_list'] : false;
     }
 
     /**
@@ -594,7 +594,7 @@ class Merchant extends WechatComponent
         ], [
             'access_token' => $this->wechat->getAccessToken()
         ]);
-        return isset($result['errmsg']) && $result['errmsg'] == 'success';
+        return isset($result['errmsg']) && $result['errmsg'] == 'ok';
     }
 
     /**
@@ -616,7 +616,7 @@ class Merchant extends WechatComponent
             'access_token' => $this->wechat->getAccessToken(),
             'filename' => $fileName
         ]);
-        return isset($result['errmsg']) && $result['errmsg'] == 'success' ? $result['image_url'] : false;
+        return isset($result['errmsg']) && $result['errmsg'] == 'ok' ? $result['image_url'] : false;
     }
 
 }

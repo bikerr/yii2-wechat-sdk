@@ -2,6 +2,8 @@
 namespace callmez\wechat\sdk\mp;
 
 use callmez\wechat\sdk\components\WechatComponent;
+use yii\base\InvalidConfigException;
+use yii\base\Event;
 
 /**
  * 卡卷组件(文档v2.0)
@@ -9,6 +11,38 @@ use callmez\wechat\sdk\components\WechatComponent;
  */
 class Card extends WechatComponent
 {
+
+    /**
+     * 生成卡券扩展字段（含卡券签名）
+     * @param array $data
+     * @return string
+     * @throws InvalidConfigException
+     */
+    public function getCardExt(array $data) {
+        if (!is_array($data)) {
+            throw new InvalidConfigException('The param data must be array');
+        }
+        if (!isset($data['card_id']) || empty($data['card_id']) ) {
+            throw new InvalidConfigException('The array must contains card_id');
+        }
+        $timestamp = time();
+        $nonce_str = uniqid();
+        $data['timestamp'] = $timestamp;
+        $data['nonce_str'] = $nonce_str;
+
+        $ret = $data;
+
+        $data['api_ticket'] = $this->getJsApiTicket();
+
+        //字典排序
+        sort($data , SORT_STRING );
+        //字符串拼接
+        $dataStr = implode('' , $data);
+        //sha1 加密
+        $ret['signature'] = sha1($dataStr);
+
+        return json_encode($ret);
+    }
 
     /**
      * 上传图片
@@ -208,7 +242,7 @@ class Card extends WechatComponent
                 }
                 $result['expire'] = $time + $result['expires_in'];
                 $this->trigger(self::EVENT_AFTER_JS_API_TICKET_UPDATE, new Event(['data' => $result]));
-                $this->setCache('card_js_api_ticket', $result, $result['expires_in']);
+                $this->wechat->setCache('card_js_api_ticket', $result, $result['expires_in']);
             }
             $this->setJsApiTicket($result);
         }
@@ -321,6 +355,27 @@ class Card extends WechatComponent
     }
 
     /**
+     *  获取用户已领取卡券接口
+     */
+    const WECHAT_CARD_GET_USER_LIST_PREFIX ='/card/user/getcardlist';
+
+    /**
+     * @param string $openid
+     * @param string $card_id
+     * @return bool|mixed
+     */
+    public function getUserCardList( $openid , $cardId='')
+    {
+        $result = $this->wechat->httpRaw(self::WECHAT_CARD_GET_USER_LIST_PREFIX , [
+            'openid'    =>  $openid,
+            'card_id'   =>  $cardId
+        ],[
+            'access_token' => $this->wechat->getAccessToken()
+        ]);
+        return isset($result['errmsg']) && $result['errmsg'] === 'ok' ? $result : false;
+    }
+
+    /**
      * 查询卡券详情
      */
     const WECHAT_CARD_GET_PREFIX = '/card/get';
@@ -332,7 +387,7 @@ class Card extends WechatComponent
      */
     public function getCard($cardId)
     {
-        $result = $this->wechat->httpPost(self::WECHAT_CARD_LIST_GET_PREFIX, [
+        $result = $this->wechat->httpRaw(self::WECHAT_CARD_GET_PREFIX, [
             'card_id' => $cardId
         ], [
             'access_token' => $this->wechat->getAccessToken()

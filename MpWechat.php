@@ -4,12 +4,12 @@ namespace callmez\wechat\sdk;
 use Yii;
 use yii\base\InvalidConfigException;
 use callmez\wechat\sdk\mp\Card;
-use callmez\wechat\sdk\mp\Shop;
 use callmez\wechat\sdk\mp\ShakeAround;
 use callmez\wechat\sdk\mp\DataCube;
 use callmez\wechat\sdk\mp\CustomService;
 use callmez\wechat\sdk\components\BaseWechat;
 use callmez\wechat\sdk\components\MessageCrypt;
+use callmez\wechat\sdk\mp\Merchant;
 
 /**
  * 微信公众号操作SDK
@@ -788,7 +788,7 @@ class MpWechat extends BaseWechat
             'openid' => $openId,
             'lang' => $lang
         ]);
-        return !array_key_exists('errcode', $result) ? $result : false;
+        return is_array($result) && !array_key_exists('errcode', $result) ? $result : false;
     }
 
     /**
@@ -1111,13 +1111,13 @@ class MpWechat extends BaseWechat
      * @return array
      * @throws HttpException
      */
-    public function jsApiConfig(array $config = [] , $url = null)
+    public function jsApiConfig(array $config = [])
     {
         $data = [
             'jsapi_ticket' => $this->getJsApiTicket(),
             'noncestr' => Yii::$app->security->generateRandomString(16),
             'timestamp' => $_SERVER['REQUEST_TIME'],
-            'url' => empty($url) ? explode('#', Yii::$app->request->getAbsoluteUrl())[0] : $url
+            'url' => explode('#', Yii::$app->request->getAbsoluteUrl())[0]
         ];
         return array_merge([
             'debug' => YII_DEBUG,
