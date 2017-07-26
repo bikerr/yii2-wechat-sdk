@@ -10,6 +10,7 @@ use callmez\wechat\sdk\mp\CustomService;
 use callmez\wechat\sdk\components\BaseWechat;
 use callmez\wechat\sdk\components\MessageCrypt;
 use callmez\wechat\sdk\mp\Merchant;
+use yii\web\HttpException;
 
 /**
  * 微信公众号操作SDK
@@ -49,6 +50,12 @@ class MpWechat extends BaseWechat
     public $encodingAesKey;
 
     /**
+     * 一次性消息模板ID
+     * @var
+     */
+    public $templateId;
+
+    /**
      * @inheritdoc
      * @throws InvalidConfigException
      */
@@ -62,6 +69,8 @@ class MpWechat extends BaseWechat
             throw new InvalidConfigException('The "token" property must be set.');
         } elseif ($this->encodingAesKey === null) {
             throw new InvalidConfigException('The "encodingAesKey" property must be set.');
+        }elseif ($this->templateId == null){
+            throw new InvalidConfigException('The "templateId" property must be set.');
         }
     }
 
@@ -232,6 +241,7 @@ class MpWechat extends BaseWechat
         ]);
         return isset($result['errmsg']) && $result['errmsg'] == 'ok';
     }
+
 
     /**
      * 消息上传
@@ -706,7 +716,7 @@ class MpWechat extends BaseWechat
      */
     public function updateUserGroup(array $data)
     {
-        $result = $this->httpRaw(self::WECHAT_MEMBER_GROUP_UPDATE_PREFIX, $data, [
+        $result = $this->httpRaw(self::WECHAT_USER_GROUP_UPDATE_PREFIX, $data, [
             'access_token' => $this->getAccessToken()
         ]);
         return isset($result['errmsg']) && $result['errmsg'] == 'ok';
@@ -807,7 +817,8 @@ class MpWechat extends BaseWechat
             'access_token' => $this->getAccessToken(),
             'next_openid' => $nextOpenId,
         ]);
-        return array_key_exists('errcode', $result) ? $result : false;
+        Yii::info($result);
+        return is_array($result) ? $result : false;
     }
 
     /* ==== 网页授权 ===== */
@@ -819,7 +830,7 @@ class MpWechat extends BaseWechat
     /**
      * 用户同意授权，获取code:第一步
      * 通过此函数生成授权url
-     * @param $redirectUrl 授权后重定向的回调链接地址，请使用urlencode对链接进行处理
+     * @param string $redirectUrl 授权后重定向的回调链接地址，请使用urlencode对链接进行处理
      * @param string $state 重定向后会带上state参数，开发者可以填写a-zA-Z0-9的参数值
      * @param string $scope 应用授权作用域，snsapi_base （不弹出授权页面，直接跳转，只能获取用户openid），
      * snsapi_userinfo （弹出授权页面，可通过openid拿到昵称、性别、所在地。并且，即使在未关注的情况下，只要用户授权，也能获取其信息）
@@ -845,7 +856,7 @@ class MpWechat extends BaseWechat
      * 通过跳转到getOauth2AuthorizeUrl返回的授权code获取用户资料 (该函数和getAccessToken函数作用不同.请参考文档)
      * @param $code
      * @param string $grantType
-     * @return array
+     * @return array |bool
      */
     public function getOauth2AccessToken($code, $grantType = 'authorization_code')
     {
@@ -855,7 +866,7 @@ class MpWechat extends BaseWechat
             'code' => $code,
             'grant_type' => $grantType
         ]);
-        return !array_key_exists('errcode', $result) ? $result : false;
+        return is_array($result) && !array_key_exists('errcode', $result) ? $result : false;
     }
 
     /**
@@ -1011,9 +1022,10 @@ class MpWechat extends BaseWechat
      * 创建二维码ticket
      */
     const WECHAT_QR_CODE_CREATE_PREFIX = '/cgi-bin/qrcode/create';
+
     /**
      * 创建二维码ticket
-     * @param arary $data
+     * @param array $data
      * @return bool|mixed
      * @throws \yii\web\HttpException
      */
@@ -1046,7 +1058,7 @@ class MpWechat extends BaseWechat
     const WECHAT_SHORT_URL_CREATE_PREFIX = '/cgi-bin/shorturl';
     /**
      * 长链接转短链接接口
-     * @param $longUrl 需要转换的长链接，支持http://、https://、weixin://wxpay 格式的url
+     * @param string $longUrl 需要转换的长链接，支持http://、https://、weixin://wxpay 格式的url
      * @return bool
      */
     public function getShortUrl($longUrl)
@@ -1109,7 +1121,7 @@ class MpWechat extends BaseWechat
      *  ])) ?>);
      * @param array $config
      * @return array
-     * @throws HttpException
+     * @throws HttpException HttpException
      */
     public function jsApiConfig(array $config = [])
     {
@@ -1256,4 +1268,56 @@ class MpWechat extends BaseWechat
         }
         return $this->_shakeAround;
     }
+
+
+    /* =================== 一次性订阅消息 =================== */
+
+    /**
+     * step1: 需要用户同意授权
+     *获取一次给用户推送一条订阅模板消息的机会
+     */
+    const WECHAT_SUBSCRIBE_MSG_URL = 'https://mp.weixin.qq.com/mp/subscribemsg';
+    /**
+     * 用户同意授权回调发送一次性消息
+     * @param string $redirectUrl 授权后重定向的回调链接地址，请使用urlencode对链接进行处理
+     * @param string $action
+     * get_confirm
+     * @param string $scene 重定向后会带上scene参数，开发者可以填0-10000的整形值，用来标识订阅场景值
+     * @param string $template_id 订阅消息模板ID，登录公众平台后台，在接口权限列表处可查看订阅模板ID
+     * @param string $reserved 用于保持请求和回调的状态，授权请后原样带回给第三方。该参数可用于防止csrf攻击（跨站请求伪造攻击），
+     * 建议第三方带上该参数，可设置为简单的随机数加session进行校验，开发者可以填写a-zA-Z0-9的参数值，最多128字节
+     * @return string
+     */
+    public function getSubcribeMsgUrl($redirectUrl, $scene  , $template_id ,  $reserved = 'biker')
+    {
+        return $this->httpBuildQuery(self::WECHAT_SUBSCRIBE_MSG_URL, [
+                'appid' => $this->appId,
+                'action' => 'get_confirm',
+                'scene' =>  $scene,
+                'template_id'   =>  $template_id,
+                'redirect_uri' => $redirectUrl,
+                'reserved'  =>  $reserved
+            ]) . '#wechat_redirect';
+    }
+
+    /**
+     * step2:通过API推送订阅模板消息给到授权微信用户
+     * 发送一次性订阅消息
+     */
+    const WECHAT_TEMPLATE_SUBSCRIBE_MESSAGE_SEND_PREFIX = '/cgi-bin/message/template/subscribe';
+    /**
+     * 发送一次性订阅消息
+     * @param array $data
+     * @return bool
+     * @throws \yii\web\HttpException
+     */
+    public function sendTemplateSubscribeMessage(array $data)
+    {
+        $result = $this->httpRaw(self::WECHAT_TEMPLATE_SUBSCRIBE_MESSAGE_SEND_PREFIX, $data, [
+            'access_token' => $this->getAccessToken()
+        ]);
+        return isset($result['errmsg']) && $result['errmsg'] == 'ok';
+    }
+
+
 }

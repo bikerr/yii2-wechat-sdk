@@ -1,13 +1,13 @@
 <?php
 namespace callmez\wechat\sdk\components;
 
-use yii\base\Component;
+use yii\base\Object;
 
 /**
  * 微信
  * @package callmez\wechat\sdk\components
  */
-class WechatComponent extends Component
+class WechatComponent extends Object
 {
     /**
      * @var BaseWechat
